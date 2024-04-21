@@ -32,7 +32,23 @@ const Index = () => {
 
   return (
     <div>
-      <h1 className="text-center">Users</h1>
+      <div className="d-flex gap-8 h-9 my-3">
+        <h2>Users</h2>
+        <form className="d-flex input-group">
+          <input
+            type="search"
+            className="form-control"
+            placeholder="Search user..."
+          />
+          <button className="btn btn-primary rounded-r-none" type="submit">
+            <i className="fa-solid fa-magnifying-glass"></i>
+          </button>
+        </form>
+        <button className="btn btn-success">
+          <i className="fa-solid fa-plus"></i>
+        </button>
+      </div>
+
       <table className="table table-striped ">
         <thead>
           <tr>

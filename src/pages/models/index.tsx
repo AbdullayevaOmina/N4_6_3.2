@@ -77,7 +77,6 @@ const index = () => {
             type="search"
             className="form-control"
             placeholder="Search Model..."
-            
           />
           <button className="btn btn-primary rounded-r-none" type="button">
             <i className="fa-solid fa-magnifying-glass"></i>
@@ -142,6 +141,7 @@ const index = () => {
           ))}
         </tbody>
       </table>
+      
     </div>
   );
 };

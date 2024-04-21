@@ -4,6 +4,14 @@ import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
 import { Button, Card, Modal, Form } from "react-bootstrap";
 
+interface ProductType {
+  id: number;
+  name: string;
+  description: string;
+  price: number;
+  imageUrl: string;
+}
+
 const Index = () => {
   const [products, setProducts] = useState([]);
   const [show, setShow] = useState(false);
@@ -84,11 +92,11 @@ const Index = () => {
             className="form-control"
             placeholder="Search product..."
           />
-          <button className="btn btn-primary rounded-r-none" type="button">
+          <button className="btn btn-primary rounded-r-none" type="submit">
             <i className="fa-solid fa-magnifying-glass"></i>
           </button>
         </form>
-        <Button variant="success" onClick={handleShow} type="submit">
+        <Button variant="success" onClick={handleShow}>
           <i className="fa-solid fa-plus"></i>
         </Button>
       </div>
@@ -125,8 +133,8 @@ const Index = () => {
       </Modal>
 
       <div>
-        {products.map((product, index) => (
-          <Card key={index} className="w-1/3">
+        {products.map((product: ProductType) => (
+          <Card key={product.id} className="w-1/3">
             <Card.Header className="text-center">
               <Link
                 to={`/main/products/${product.id}`}
