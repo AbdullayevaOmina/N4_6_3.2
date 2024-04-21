@@ -1,5 +1,5 @@
 import routes from "@routes";
-import "./style.scss";
+import "../sidebar/style.scss";
 import { NavLink } from "react-router-dom";
 
 const index = () => {
@@ -9,7 +9,7 @@ const index = () => {
         {routes.map((link, index) => {
           return (
             <li key={index}>
-              <NavLink className="border block py-2 px-4" to={link.path}>
+              <NavLink className="border block py-2 px-4 text-decoration-none text-center" to={link.path}>
                 {link.content}
               </NavLink>
             </li>
