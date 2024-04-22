@@ -141,7 +141,6 @@ const index = () => {
           ))}
         </tbody>
       </table>
-      
     </div>
   );
 };

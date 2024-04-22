@@ -4,18 +4,18 @@ import { toast } from "react-toastify";
 import { Button, Modal, Form } from "react-bootstrap";
 
 const index = () => {
-  const [models, setModels] = useState([]);
+  const [brands, setBrands] = useState([]);
   const [show, setShow] = useState(false);
   const [formData, setFormData] = useState({ name: "" });
 
   useEffect(() => {
     axios
-      .get("/models")
+      .get("/brands")
       .then((response) => {
-        setModels(response.data);
+        setBrands(response.data);
       })
       .catch((error) => {
-        console.error("Error fetching models:", error);
+        console.error("Error fetching brands:", error);
       });
   }, []);
 
@@ -32,38 +32,38 @@ const index = () => {
 
   const handleAddModel = async () => {
     try {
-      await axios.post("/models", formData);
-      toast.success("Model added");
+      await axios.post("/brands", formData);
+      toast.success("Brand added");
       handleClose();
     } catch (error) {
-      console.error("Error adding model:", error);
-      toast.error("Error adding model");
+      console.error("Error adding brand:", error);
+      toast.error("Error adding brand");
     }
   };
 
-  const editModal = async (modelID) => {
+  const editModal = async (brandID) => {
     try {
-      const response = await axios.get(`/models/${modelID}`);
+      const response = await axios.get(`/brands/${brandID}`);
       const modelData = response.data;
-      setFormData(modelData); // Form verilerini mevcut model verileriyle doldur
-      handleShow(); // Modalı göster
+      setFormData(modelData); 
+      handleShow();
     } catch (error) {
-      console.error("Error fetching model data:", error);
-      toast.error("Error fetching model data");
+      console.error("Error fetching brand data:", error);
+      toast.error("Error fetching brand data");
     }
   };
 
-  const deleteModal = async (modelID) => {
+  const deleteModal = async (brandID) => {
     const confirmation = window.confirm(
-      "Are you sure you want to delete this Model?"
+      "Are you sure you want to delete this Brand?"
     );
     if (confirmation) {
       try {
-        await axios.delete(`/models/${modelID}`);
-        toast.success("Model deleted");
-        setModels(models.filter((model) => model.id !== modelID));
+        await axios.delete(`/brands/${brandID}`);
+        toast.success("Brand deleted");
+        setBrands(brands.filter((brand) => brand.id !== brandID));
       } catch (error) {
-        toast.error("Error deleting model");
+        toast.error("Error deleting brand");
       }
     }
   };
@@ -76,7 +76,7 @@ const index = () => {
           <input
             type="search"
             className="form-control"
-            placeholder="Search Model..."
+            placeholder="Search Brand..."
           />
           <button className="btn btn-primary rounded-r-none" type="button">
             <i className="fa-solid fa-magnifying-glass"></i>
@@ -89,12 +89,12 @@ const index = () => {
 
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Add New Model</Modal.Title>
+          <Modal.Title>Add New Brand</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
             <Form.Group className="mb-3">
-              <Form.Label>Model name:</Form.Label>
+              <Form.Label>Brand name:</Form.Label>
               <Form.Control
                 name="name"
                 value={formData.name}
@@ -109,7 +109,7 @@ const index = () => {
             Cancel
           </Button>
           <Button variant="primary" onClick={handleAddModel}>
-            Add Model
+            Add brand
           </Button>
         </Modal.Footer>
       </Modal>
@@ -124,16 +124,16 @@ const index = () => {
           </tr>
         </thead>
         <tbody>
-          {models.map((model, index) => (
+          {brands.map((brand, index) => (
             <tr key={index}>
               <th scope="row">{index + 1}</th>
-              <td>{model.id}</td>
-              <td>{model.name}</td>
+              <td>{brand.id}</td>
+              <td>{brand.name}</td>
               <td className="d-flex gap-2">
-                <Button variant="warning" onClick={() => editModal(model.id)}>
+                <Button variant="warning" onClick={() => editModal(brand.id)}>
                   <i className="fa-solid fa-pen"></i> Edit
                 </Button>
-                <Button variant="danger" onClick={() => deleteModal(model.id)}>
+                <Button variant="danger" onClick={() => deleteModal(brand.id)}>
                   <i className="fa-solid fa-trash-can"></i> Delete
                 </Button>
               </td>
