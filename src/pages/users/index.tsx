@@ -44,9 +44,13 @@ const Index = () => {
             <i className="fa-solid fa-magnifying-glass"></i>
           </button>
         </form>
-        <button className="btn btn-success">
-          <i className="fa-solid fa-plus"></i>
-        </button>
+        <EditeUserModal
+          btnIcon={"fa-solid fa-plus"}
+          title={"Create User"}
+          btnTitle={"Create"}
+          apiPath={"/users"}
+          apiType={"post"}
+        />
       </div>
 
       <table className="table table-striped ">
@@ -71,7 +75,13 @@ const Index = () => {
               </td>
               <td>{user.phone}</td>
               <td className="d-flex gap-2">
-                <EditeUserModal userID={user.id} />
+                <EditeUserModal
+                  userID={user.id}
+                  btnColor="warning"
+                  btnIcon={"fa-solid fa-user-pen"}
+                  btnTitle={"Edit"}
+                  title={"Edit User Info"}
+                />
                 <button
                   className="btn btn-danger"
                   onClick={() => deleteUser(user.id)}

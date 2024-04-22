@@ -5,7 +5,7 @@ import Modal from "react-bootstrap/Modal";
 import axios from "axios";
 import { toast } from "react-toastify";
 
-function Index({ userID }) {
+function Index({ userID, btnIcon, title, btnColor, btnTitle, apiType }) {
   const [show, setShow] = useState(false);
   const [formData, setFormData] = useState({
     username: "",
@@ -22,19 +22,35 @@ function Index({ userID }) {
           setFormData({
             username: userData.username,
             phone: userData.phone,
-            password: userData.password
+            password: userData.password,
           });
         })
         .catch((error) => {
           console.error("Error fetching user data:", error);
         });
+    } else if (apiType === "post") {
+      axios
+        .post(`/users`)
+        .then((response) => {
+          const userData = response.data;
+          setFormData({
+            username: userData.username,
+            phone: userData.phone,
+            password: userData.password,
+          });
+          toast.success("User Created!");
+        })
+        .catch((error) => {
+          console.error("Error fetching user data:", error);
+        });
     }
-  }, [userID]);
+  }, [userID, apiType]); // useEffect dependencies eklendi
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
   const handleInputChange = (e) => {
+    e.preventDefault(); // 'e.preventDefault()' olarak düzeltildi
     const { name, value } = e.target;
     setFormData((prevFormData) => ({
       ...prevFormData,
@@ -54,20 +70,29 @@ function Index({ userID }) {
   };
 
   const formInputInfo = [
-    { label: "User Name:", name: "username" },
-    { label: "Phone Number:", name: "phone" },
-    { label: "Old passwor:", name: "password" },
+    { label: "User Name:", name: "username", placeholder: "Enter username" }, // Placeholder eklendi
+    {
+      label: "Phone Number:",
+      name: "phone",
+      placeholder: "Enter phone number",
+    }, // Placeholder eklendi
+    {
+      label: "Old password:",
+      name: "password",
+      placeholder: "Enter old password",
+      type: "password",
+    }, // Placeholder ve type eklendi
   ];
 
   return (
     <>
-      <Button variant="warning" onClick={handleShow}>
-        <i className="fa-solid fa-user-pen" />
+      <Button variant={btnColor} onClick={handleShow}>
+        <i className={btnIcon} />
       </Button>
 
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Edit User Info</Modal.Title>
+          <Modal.Title>{title}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
@@ -77,7 +102,7 @@ function Index({ userID }) {
                 <Form.Control
                   name={item.name}
                   placeholder={item.placeholder}
-                  type={item.type}
+                  type={item.type || "text"} // type varsayılan olarak 'text' olarak ayarlandı
                   value={formData[item.name]}
                   onChange={handleInputChange}
                   autoFocus={index === 0}
@@ -91,7 +116,7 @@ function Index({ userID }) {
             Close
           </Button>
           <Button variant="primary" onClick={handleEditUser}>
-            Edit
+            {btnTitle}
           </Button>
         </Modal.Footer>
       </Modal>
