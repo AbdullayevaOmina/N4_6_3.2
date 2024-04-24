@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import http from "@http";
 import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
 import { Button, Card, Modal, Form } from "react-bootstrap";
@@ -27,13 +27,13 @@ const Index = () => {
   const formInputInfo = [
     { label: "Product Name:", name: "name" },
     { label: "Price:", name: "price", type: "number" },
-    { label: "Img URL:", name: "imageUrl" },
+    { label: "Img URL:", name: "imageUrl", type: "file" },
     { label: "Model ID:", name: "modelId", type: "number" },
     { label: "Brand ID:", name: "brandId", type: "number" },
   ];
 
   useEffect(() => {
-    axios
+    http
       .get("/products")
       .then((response) => {
         setProducts(response.data);
@@ -56,7 +56,7 @@ const Index = () => {
 
   const handleAddProduct = async () => {
     try {
-      await axios.post("/products", formData);
+      await http.post("/products", formData);
       toast.success("Product added");
       handleClose();
     } catch (error) {
@@ -73,7 +73,7 @@ const Index = () => {
     );
     if (confirmation) {
       try {
-        await axios.delete(`/products/${productID}`);
+        await http.delete(`/products/${productID}`);
         toast.success("Product deleted");
         setProducts(products.filter((product) => product.id !== productID));
       } catch (error) {
@@ -107,7 +107,7 @@ const Index = () => {
         </Modal.Header>
         <Modal.Body>
           <Form>
-            {formInputInfo.map((item, i) => {
+            {/* {formInputInfo.map((item, i) => {
               return (
                 <Form.Group className="mb-3">
                   <Form.Label>{item.label}</Form.Label>
@@ -119,7 +119,44 @@ const Index = () => {
                   />
                 </Form.Group>
               );
-            })}
+            })} */}
+            <Form.Group className="mb-3">
+              <Form.Label>Product Name:</Form.Label>
+              <Form.Control name="name" onChange={handleInputChange} required />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Price:</Form.Label>
+              <Form.Control
+                name="price"
+                onChange={handleInputChange}
+                required
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Img URL:</Form.Label>
+              <Form.Control
+                type="file"
+                name="imageUrl"
+                onChange={handleInputChange}
+                required
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Model ID:</Form.Label>
+              <Form.Control
+                name="modelID"
+                onChange={handleInputChange}
+                required
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Brand ID:</Form.Label>
+              <Form.Control
+                name="branID"
+                onChange={handleInputChange}
+                required
+              />
+            </Form.Group>
           </Form>
         </Modal.Body>
         <Modal.Footer>

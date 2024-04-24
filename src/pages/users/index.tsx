@@ -1,34 +1,38 @@
-import { useState, useEffect } from "react";
-import axios from "axios";
+import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import EditeUserModal from "../../components/edituser/index.tsx";
-import { Link } from "react-router-dom";
+import { Get, Delete } from "@httpModel";
 
-const Index = () => {
-  const [users, setUsers] = useState([]);
+interface User {
+  id: number;
+  username: string;
+  phone: string;
+}
+
+const Index: React.FC = () => {
+  const [users, setUsers] = useState<User[]>([]);
 
   useEffect(() => {
-    axios
-      .get("/users")
-      .then((response) => {
-        setUsers(response.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching users:", error);
-      });
-  }, []);
+    const fetchUsers = async () => {
+      const response = await Get("/users");
+      setUsers(response);
+    };
 
-  async function deleteUser(userID) {
+    fetchUsers();
+  }, [setUsers]);
+
+  const deleteUser = async (userID: number) => {
     const confirmation = window.confirm("Userni o'chirishni tasdiqlaysizmi?");
     if (confirmation) {
       try {
-        await axios.delete(`/users/${userID}`);
+        await Delete(`/users`, userID);
+        setUsers((prevUsers) => prevUsers.filter((user) => user.id !== userID));
         toast.success("User deleted");
       } catch (error) {
         toast.error("Error deleting user");
       }
     }
-  }
+  };
 
   return (
     <div>
@@ -46,9 +50,9 @@ const Index = () => {
         </form>
         <EditeUserModal
           btnIcon={"fa-solid fa-plus"}
+          btnColor="success"
           title={"Create User"}
           btnTitle={"Create"}
-          apiPath={"/users"}
           apiType={"post"}
         />
       </div>
@@ -64,15 +68,11 @@ const Index = () => {
           </tr>
         </thead>
         <tbody>
-          {users.map((user, index) => (
-            <tr key={index}>
-              <th scope="row">{index + 1}</th>
+          {users.map((user) => (
+            <tr key={user.id}>
+              <th scope="row">{user.id}</th>
               <td>{user.id}</td>
-              <td>
-                <Link className=" text-decoration-none" to={`/users/`}>
-                  {user.username}
-                </Link>
-              </td>
+              <td className="text-primary">{user.username}</td>
               <td>{user.phone}</td>
               <td className="d-flex gap-2">
                 <EditeUserModal
@@ -81,6 +81,7 @@ const Index = () => {
                   btnIcon={"fa-solid fa-user-pen"}
                   btnTitle={"Edit"}
                   title={"Edit User Info"}
+                  apiType={"patch"}
                 />
                 <button
                   className="btn btn-danger"

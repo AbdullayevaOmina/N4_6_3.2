@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
 import { toast } from "react-toastify";
 import { Button, Modal, Form } from "react-bootstrap";
+import http from "../../plugins/axios";
+
 
 const index = () => {
   const [brands, setBrands] = useState([]);
@@ -9,7 +10,7 @@ const index = () => {
   const [formData, setFormData] = useState({ name: "" });
 
   useEffect(() => {
-    axios
+    http
       .get("/brands")
       .then((response) => {
         setBrands(response.data);
@@ -32,7 +33,7 @@ const index = () => {
 
   const handleAddModel = async () => {
     try {
-      await axios.post("/brands", formData);
+      await http.post("/brands", formData);
       toast.success("Brand added");
       handleClose();
     } catch (error) {
@@ -43,7 +44,7 @@ const index = () => {
 
   const editModal = async (brandID) => {
     try {
-      const response = await axios.get(`/brands/${brandID}`);
+      const response = await http.get(`/brands/${brandID}`);
       const modelData = response.data;
       setFormData(modelData); 
       handleShow();
@@ -59,7 +60,7 @@ const index = () => {
     );
     if (confirmation) {
       try {
-        await axios.delete(`/brands/${brandID}`);
+        await http.delete(`/brands/${brandID}`);
         toast.success("Brand deleted");
         setBrands(brands.filter((brand) => brand.id !== brandID));
       } catch (error) {

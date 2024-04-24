@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import http from "../../plugins/axios";
 import { toast } from "react-toastify";
 import { Button, Modal, Form } from "react-bootstrap";
 
@@ -9,7 +9,7 @@ const index = () => {
   const [formData, setFormData] = useState({ name: "" });
 
   useEffect(() => {
-    axios
+    http
       .get("/models")
       .then((response) => {
         setModels(response.data);
@@ -32,7 +32,7 @@ const index = () => {
 
   const handleAddModel = async () => {
     try {
-      await axios.post("/models", formData);
+      await http.post("/models", formData);
       toast.success("Model added");
       handleClose();
     } catch (error) {
@@ -43,7 +43,7 @@ const index = () => {
 
   const editModal = async (modelID) => {
     try {
-      const response = await axios.get(`/models/${modelID}`);
+      const response = await http.get(`/models/${modelID}`);
       const modelData = response.data;
       setFormData(modelData); // Form verilerini mevcut model verileriyle doldur
       handleShow(); // Modalı göster
@@ -59,7 +59,7 @@ const index = () => {
     );
     if (confirmation) {
       try {
-        await axios.delete(`/models/${modelID}`);
+        await http.delete(`/models/${modelID}`);
         toast.success("Model deleted");
         setModels(models.filter((model) => model.id !== modelID));
       } catch (error) {

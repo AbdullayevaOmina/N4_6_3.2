@@ -1,56 +1,71 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, ChangeEvent } from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
-import axios from "axios";
+import { Get, Patch, Post } from "@httpModel";
 import { toast } from "react-toastify";
 
-function Index({ userID, btnIcon, title, btnColor, btnTitle, apiType }) {
+interface FormData {
+  username: string;
+  password: string;
+  phone: string;
+}
+
+interface FormInput {
+  label: string;
+  name: string;
+  placeholder: string;
+  type?: string;
+}
+
+interface Props {
+  userID: string;
+  btnIcon: string;
+  title: string;
+  btnColor: string;
+  btnTitle: string;
+  apiType: string;
+}
+
+const Index: React.FC<Props> = ({
+  userID,
+  btnIcon,
+  title,
+  btnColor,
+  btnTitle,
+  apiType,
+}: Props) => {
   const [show, setShow] = useState(false);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     username: "",
     password: "",
     phone: "",
   });
 
   useEffect(() => {
-    if (userID) {
-      axios
-        .get(`/users/${userID}`)
-        .then((response) => {
-          const userData = response.data;
+    const fetchUserData = async () => {
+      try {
+        if (userID) {
+          const userData = await Get(`/users/${userID}`);
           setFormData({
             username: userData.username,
             phone: userData.phone,
             password: userData.password,
           });
-        })
-        .catch((error) => {
-          console.error("Error fetching user data:", error);
-        });
-    } else if (apiType === "post") {
-      axios
-        .post(`/users`)
-        .then((response) => {
-          const userData = response.data;
-          setFormData({
-            username: userData.username,
-            phone: userData.phone,
-            password: userData.password,
-          });
-          toast.success("User Created!");
-        })
-        .catch((error) => {
-          console.error("Error fetching user data:", error);
-        });
-    }
-  }, [userID, apiType]); // useEffect dependencies eklendi
+          console.log("Kkk");
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  const handleInputChange = (e) => {
-    e.preventDefault(); // 'e.preventDefault()' olarak düzeltildi
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prevFormData) => ({
       ...prevFormData,
@@ -60,28 +75,40 @@ function Index({ userID, btnIcon, title, btnColor, btnTitle, apiType }) {
 
   const handleEditUser = async () => {
     try {
-      await axios.patch(`/users/${userID}`, formData);
-      toast.success("User edited");
-      handleClose();
+      if (apiType === "patch") {
+        await Patch("/users", userID, formData);
+        toast.success("User edited");
+        handleClose();
+      } else if (apiType === "post") {
+        const response = await Post(`/users`, formData);
+        const userData = response.data;
+        setFormData({
+          username: userData.username,
+          phone: userData.phone,
+          password: userData.password,
+        });
+        toast.success("User Created!");
+      }
     } catch (error) {
-      console.error("Error editing user:", error);
-      toast.error("Error editing user");
+      toast.error(error.message);
+      console.error("Error fetching user data:", error);
     }
+    console.log("jjn");
   };
 
-  const formInputInfo = [
-    { label: "User Name:", name: "username", placeholder: "Enter username" }, // Placeholder eklendi
+  const formInputInfo: FormInput[] = [
+    { label: "User Name:", name: "username", placeholder: "Enter username" },
     {
       label: "Phone Number:",
       name: "phone",
       placeholder: "Enter phone number",
-    }, // Placeholder eklendi
+    },
     {
       label: "Old password:",
       name: "password",
       placeholder: "Enter old password",
       type: "password",
-    }, // Placeholder ve type eklendi
+    },
   ];
 
   return (
@@ -122,6 +149,6 @@ function Index({ userID, btnIcon, title, btnColor, btnTitle, apiType }) {
       </Modal>
     </>
   );
-}
+};
 
 export default Index;

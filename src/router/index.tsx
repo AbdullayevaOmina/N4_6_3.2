@@ -8,6 +8,8 @@ import App from "../App";
 import { Brands, Models, Products, SignIn, SignUp, User, Users } from "@pages";
 import { MainLayout } from "@layout";
 
+
+
 const index = () => {
   const router = createBrowserRouter(
     createRoutesFromElements(
@@ -19,7 +21,7 @@ const index = () => {
           <Route path="brands" element={<Brands />} />
           <Route path="users" element={<Users />} />
           <Route path="models" element={<Models />} />
-          <Route path="user" element={<User />} />
+          <Route path="" element={<User />} />
         </Route>
       </Route>
     )

@@ -1,19 +1,40 @@
-import { useState } from "react";
-import axios from "axios";
+import React, { useState } from "react";
 import { Button, Card, Form } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import http from "@http";
+import * as Yup from "yup";
+import { useMask } from "@react-input/mask";
 
-function index() {
+interface FormData {
+  username: string;
+  phone: string;
+  password: string;
+}
+
+interface ErrorMessages {
+  username?: string;
+  phone?: string;
+  password?: string;
+}
+
+const Index: React.FC = () => {
   const navigate = useNavigate();
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     username: "",
     phone: "",
     password: "",
   });
 
-  const handleInputChange = (e) => {
+  const [error, setError] = useState<ErrorMessages>({});
+  
+  const inputRef = useMask({
+    mask: "+998 (__) ___-__-__",
+    replacement: { _: /\d/ },
+  });
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const { name, value } = e.target;
     setFormData((prevFormData) => ({
       ...prevFormData,
@@ -21,44 +42,30 @@ function index() {
     }));
   };
 
-  // Foydalanuvchi ma'lumotlarini tekshiruvchi funksiya
-  const userDataVerification = (username, phone, password) => {
-    if (!username || !phone || !password) {
-      toast.error("Please fill in all fields");
-      return false;
-    }
+  const schema = Yup.object().shape({
+    username: Yup.string()
+      .min(6, "name 6 tadan kop bolsin")
+      .required("required"),
+    password: Yup.string().min(6, "6 tadan kop bolsin").required("required"),
+    phone: Yup.string().min(19, "To'liq kiriting").required("required"),
+  });
 
-    if (username.length < 5) {
-      toast.error("Please enter a username of more than 5 characters");
-      return false;
-    }
-
-    if (password.length < 5) {
-      toast.error("Please enter password with more than 5 characters");
-      return false;
-    }
-
-    return true;
-  };
-
-  const handleFormSubmit = async () => {
+  const handleFormSubmit = async (): Promise<void> => {
     try {
-      const isUserDataValid = userDataVerification(
-        formData.username,
-        formData.phone,
-        formData.password
-      );
-
-      // Agar foydalanuvchi ma'lumotlari to'g'ri bo'lmagan bo'lsa, qaytish
-      if (!isUserDataValid) return;
-
-      await axios.post("/auth/register", formData);
-
-      toast("You are registered!", { type: "success" });
-
+      await schema.validate(formData, { abortEarly: false });
+      let phone_number = formData.phone.replace(/\D/g, "");
+      let payload = { ...formData, phone: `+${phone_number}` };
+      await http.post("/auth/register", payload);
+      toast.success("You are registered!");
       navigate("/signin");
     } catch (error) {
-      toast(error.message, { type: "error" });
+      let validationError: ErrorMessages = {};
+      if (error instanceof Yup.ValidationError) {
+        error.inner.forEach((err) => {
+          validationError[err.path] = err.message;
+        });
+      }
+      setError(validationError);
     }
   };
 
@@ -76,6 +83,9 @@ function index() {
               autoFocus
               className="bg-secondary-subtle"
             />
+            {error.username && (
+              <Form.Text className="text-danger">{error.username}</Form.Text>
+            )}
           </Form.Group>
 
           <Form.Group className="mb-3">
@@ -85,7 +95,11 @@ function index() {
               value={formData.phone}
               onChange={handleInputChange}
               className="bg-secondary-subtle"
+              ref={inputRef}
             />
+            {error.phone && (
+              <Form.Text className="text-danger">{error.phone}</Form.Text>
+            )}
           </Form.Group>
 
           <Form.Group className="mb-3">
@@ -97,6 +111,9 @@ function index() {
               onChange={handleInputChange}
               className="bg-secondary-subtle"
             />
+            {error.password && (
+              <Form.Text className="text-danger">{error.password}</Form.Text>
+            )}
           </Form.Group>
 
           <Button
@@ -113,6 +130,6 @@ function index() {
       </Card>
     </div>
   );
-}
+};
 
-export default index;
+export default Index;
