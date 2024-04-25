@@ -2,8 +2,8 @@ import http from "./axios";
 
 async function Get(url) {
   try {
-    let reponse = await http.get(url);
-    return reponse.data;
+    let response = await http.get(url);
+    return response.data;
   } catch (error) {
     console.log(error);
   }

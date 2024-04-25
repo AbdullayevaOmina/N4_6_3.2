@@ -5,10 +5,16 @@ import {
   RouterProvider,
 } from "react-router-dom";
 import App from "../App";
-import { Brands, Models, Products, SignIn, SignUp, User, Users } from "@pages";
+import {
+  Brands,
+  Models,
+  Products,
+  SignIn,
+  SignUp,
+  Users,
+  imgUpload,
+} from "@pages";
 import { MainLayout } from "@layout";
-
-
 
 const index = () => {
   const router = createBrowserRouter(
@@ -21,7 +27,7 @@ const index = () => {
           <Route path="brands" element={<Brands />} />
           <Route path="users" element={<Users />} />
           <Route path="models" element={<Models />} />
-          <Route path="" element={<User />} />
+          <Route path="imgUpload" element={<imgUpload />} />
         </Route>
       </Route>
     )

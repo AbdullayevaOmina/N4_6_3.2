@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import http from "@http";
 import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
 import { Button, Card, Modal, Form } from "react-bootstrap";
+import { Get, Post, Delete } from "@httpModel";
 
 interface ProductType {
   id: number;
@@ -13,67 +13,68 @@ interface ProductType {
 }
 
 const Index = () => {
-  const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState<ProductType[]>([]);
+  const [brands, setBrands] = useState<any[]>([]);
+  const [models, setModels] = useState<any[]>([]);
   const [show, setShow] = useState(false);
 
   const [formData, setFormData] = useState({
     name: "",
-    price: Number,
+    price: 0,
     imageUrl: "",
-    modelId: Number,
-    brandId: Number,
+    modelId: 0,
+    brandId: 0,
   });
 
-  const formInputInfo = [
-    { label: "Product Name:", name: "name" },
-    { label: "Price:", name: "price", type: "number" },
-    { label: "Img URL:", name: "imageUrl", type: "file" },
-    { label: "Model ID:", name: "modelId", type: "number" },
-    { label: "Brand ID:", name: "brandId", type: "number" },
-  ];
-
   useEffect(() => {
-    http
-      .get("/products")
-      .then((response) => {
-        setProducts(response.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching products:", error);
-      });
+    const fetchData = async () => {
+      try {
+        const productResponse = await Get("/products");
+        setProducts(productResponse);
+
+        const brandResponse = await Get("/brands");
+        setBrands(brandResponse);
+
+        const modeldResponse = await Get("/models");
+        setModels(modeldResponse);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    fetchData();
   }, []);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  const handleInputChange = (e) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
     setFormData((prevFormData) => ({
       ...prevFormData,
       [name]: value,
     }));
   };
-
   const handleAddProduct = async () => {
     try {
-      await http.post("/products", formData);
+      await Post("/products", formData);
       toast.success("Product added");
       handleClose();
     } catch (error) {
-      console.error("Error adding product:", error);
       toast.error("Error adding product");
     }
   };
 
-  async function editProduct(productID) {}
+  async function editProduct(productID: number) {}
 
-  async function deleteProduct(productID) {
+  async function deleteProduct(productID: number) {
     const confirmation = window.confirm(
       "Are you sure you want to delete this product?"
     );
     if (confirmation) {
       try {
-        await http.delete(`/products/${productID}`);
+        await Delete(`/products/`, productID);
         toast.success("Product deleted");
         setProducts(products.filter((product) => product.id !== productID));
       } catch (error) {
@@ -107,19 +108,6 @@ const Index = () => {
         </Modal.Header>
         <Modal.Body>
           <Form>
-            {/* {formInputInfo.map((item, i) => {
-              return (
-                <Form.Group className="mb-3">
-                  <Form.Label>{item.label}</Form.Label>
-                  <Form.Control
-                    type={item.type}
-                    name={item.name}
-                    onChange={handleInputChange}
-                    required
-                  />
-                </Form.Group>
-              );
-            })} */}
             <Form.Group className="mb-3">
               <Form.Label>Product Name:</Form.Label>
               <Form.Control name="name" onChange={handleInputChange} required />
@@ -130,32 +118,39 @@ const Index = () => {
                 name="price"
                 onChange={handleInputChange}
                 required
+                type="number"
               />
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>Img URL:</Form.Label>
               <Form.Control
-                type="file"
                 name="imageUrl"
                 onChange={handleInputChange}
                 required
               />
             </Form.Group>
             <Form.Group className="mb-3">
-              <Form.Label>Model ID:</Form.Label>
-              <Form.Control
-                name="modelID"
-                onChange={handleInputChange}
-                required
-              />
+              <Form.Label>Model:</Form.Label>
+              <Form.Select name="modelId" onChange={handleInputChange} required>
+                <option value="">Select...</option>
+                {models.map((model) => (
+                  <option key={model.id} value={model.id}>
+                    {model.name}
+                  </option>
+                ))}
+              </Form.Select>
             </Form.Group>
+
             <Form.Group className="mb-3">
-              <Form.Label>Brand ID:</Form.Label>
-              <Form.Control
-                name="branID"
-                onChange={handleInputChange}
-                required
-              />
+              <Form.Label>Brand:</Form.Label>
+              <Form.Select name="brandId" onChange={handleInputChange} required>
+                <option value="">Select...</option>
+                {brands.map((brand) => (
+                  <option key={brand.id} value={brand.id}>
+                    {brand.name}
+                  </option>
+                ))}
+              </Form.Select>
             </Form.Group>
           </Form>
         </Modal.Body>
