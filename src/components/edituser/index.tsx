@@ -42,25 +42,24 @@ const Index: React.FC<Props> = ({
     phone: "",
   });
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        if (userID) {
-          const userData = await Get(`/users/${userID}`);
-          setFormData({
-            username: userData.username,
-            phone: userData.phone,
-            password: userData.password,
-          });
-          console.log("Kkk");
-        }
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchUserData = async () => {
+  //     try {
+  //       if (userID) {
+  //         const userData = await Get(`/users/${userID}`);
+  //         setFormData({
+  //           username: userData.username,
+  //           phone: userData.phone,
+  //           password: userData.password,
+  //         });
+  //       }
+  //     } catch (error) {
+  //       console.error("Error fetching user data:", error);
+  //     }
+  //   };
 
-    fetchUserData();
-  }, []);
+  //   fetchUserData();
+  // }, []);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -77,6 +76,7 @@ const Index: React.FC<Props> = ({
     try {
       if (apiType === "patch") {
         await Patch("/users", userID, formData);
+
         toast.success("User edited");
         handleClose();
       } else if (apiType === "post") {
@@ -93,7 +93,6 @@ const Index: React.FC<Props> = ({
       toast.error(error.message);
       console.error("Error fetching user data:", error);
     }
-    console.log("jjn");
   };
 
   const formInputInfo: FormInput[] = [

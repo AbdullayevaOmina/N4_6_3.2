@@ -10,6 +10,7 @@ export default defineConfig({
       { find: "@", replacement: "/src/*" },
       { find: "@components", replacement: "/src/components" },
       { find: "@containers", replacement: "/src/components/containers" },
+      { find: "@table", replacement: "/src/components/table" },
 
       { find: "@images", replacement: "/src/assets/images" },
       { find: "@hooks", replacement: "/src/hooks" },
@@ -20,8 +21,7 @@ export default defineConfig({
       { find: "@assets", replacement: "/src/assets" },
       { find: "@hooks", replacement: "/src/hooks" },
       { find: "@router", replacement: "/src/router" },
-      { find: "@routes", replacement: "/src/router/routes.tsx" }
-      ,
+      { find: "@routes", replacement: "/src/router/routes.tsx" },
       { find: "@http", replacement: "/src/plugins/axios.js" },
       { find: "@httpModel", replacement: "/src/plugins/httpModels.js" },
       { find: "@auth", replacement: "/src/plugins/auth.js" },

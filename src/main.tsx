@@ -12,7 +12,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
   // <React.StrictMode>
   <>
     <Root />
-    <ToastContainer position="top-right" theme="colored"/>
+    <ToastContainer position="top-right" theme="colored" />
   </>
   // </React.StrictMode>
 );

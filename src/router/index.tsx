@@ -12,7 +12,7 @@ import {
   SignIn,
   SignUp,
   Users,
-  imgUpload,
+  ImageUpload,
 } from "@pages";
 import { MainLayout } from "@layout";
 
@@ -27,7 +27,7 @@ const index = () => {
           <Route path="brands" element={<Brands />} />
           <Route path="users" element={<Users />} />
           <Route path="models" element={<Models />} />
-          <Route path="imgUpload" element={<imgUpload />} />
+          <Route path="imageUpload" element={<ImageUpload />} />
         </Route>
       </Route>
     )

@@ -1,4 +1,4 @@
-import { Brands, Models, Products, Users, imgUpload } from "@pages";
+import { Brands, Models, Products, Users, ImageUpload } from "@pages";
 
 const router = [
   {
@@ -22,9 +22,9 @@ const router = [
     content: "Models",
   },
   {
-    path: "/main/imgUpload",
-    element: <imgUpload />,
-    content: "imgUpload",
+    path: "/main/imageUpload",
+    element: <ImageUpload />,
+    content: "ImageUpload",
   },
 ];
 

@@ -132,19 +132,20 @@ const Index = () => {
             <Form.Group className="mb-3">
               <Form.Label>Model:</Form.Label>
               <Form.Select name="modelId" onChange={handleInputChange} required>
-                <option value="">Select...</option>
+                <option selected>Select...</option>
                 {models.map((model) => (
                   <option key={model.id} value={model.id}>
                     {model.name}
                   </option>
                 ))}
+                
               </Form.Select>
             </Form.Group>
 
             <Form.Group className="mb-3">
               <Form.Label>Brand:</Form.Label>
               <Form.Select name="brandId" onChange={handleInputChange} required>
-                <option value="">Select...</option>
+                <option selected>Select...</option>
                 {brands.map((brand) => (
                   <option key={brand.id} value={brand.id}>
                     {brand.name}

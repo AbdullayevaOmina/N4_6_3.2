@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { Button, Modal, Form } from "react-bootstrap";
-import http from "../../plugins/axios";
+import http from "@http";
+import Table from "@table";
 
-
-const index = () => {
+const Index = () => {
   const [brands, setBrands] = useState([]);
   const [show, setShow] = useState(false);
-  const [formData, setFormData] = useState({ name: "" });
+  const [formData, setFormData] = useState({ id: "", name: "" });
 
   useEffect(() => {
     http
@@ -45,12 +45,23 @@ const index = () => {
   const editModal = async (brandID) => {
     try {
       const response = await http.get(`/brands/${brandID}`);
-      const modelData = response.data;
-      setFormData(modelData); 
+      const brandData = response.data;
+      setFormData(brandData);
       handleShow();
     } catch (error) {
       console.error("Error fetching brand data:", error);
       toast.error("Error fetching brand data");
+    }
+  };
+
+  const handleEdit = async () => {
+    try {
+      await http.patch(`/brands/${formData.id}`, formData);
+      toast.success("Brand updated");
+      handleClose();
+    } catch (error) {
+      console.error("Error editing brand:", error);
+      toast.error("Error editing brand");
     }
   };
 
@@ -68,6 +79,12 @@ const index = () => {
       }
     }
   };
+
+  const headers = [
+    { title: "ID", value: "id" },
+    { title: "Name", value: "name" },
+    { title: "Actions", value: "action" },
+  ];
 
   return (
     <div>
@@ -90,7 +107,7 @@ const index = () => {
 
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Add New Brand</Modal.Title>
+          <Modal.Title>Add/Edit Brand</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
@@ -109,41 +126,18 @@ const index = () => {
           <Button variant="secondary" onClick={handleClose}>
             Cancel
           </Button>
-          <Button variant="primary" onClick={handleAddModel}>
-            Add brand
+          <Button
+            variant="primary"
+            onClick={formData.id ? handleEdit : handleAddModel}
+          >
+            {formData.id ? "Edit Brand" : "Add Brand"}
           </Button>
         </Modal.Footer>
       </Modal>
 
-      <table className="table table-striped ">
-        <thead>
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">ID</th>
-            <th scope="col">Name</th>
-            <th scope="col">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {brands.map((brand, index) => (
-            <tr key={index}>
-              <th scope="row">{index + 1}</th>
-              <td>{brand.id}</td>
-              <td>{brand.name}</td>
-              <td className="d-flex gap-2">
-                <Button variant="warning" onClick={() => editModal(brand.id)}>
-                  <i className="fa-solid fa-pen"></i> Edit
-                </Button>
-                <Button variant="danger" onClick={() => deleteModal(brand.id)}>
-                  <i className="fa-solid fa-trash-can"></i> Delete
-                </Button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <Table headers={headers} body={brands} />
     </div>
   );
 };
 
-export default index;
+export default Index;
