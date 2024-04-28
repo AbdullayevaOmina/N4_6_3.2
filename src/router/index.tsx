@@ -15,6 +15,7 @@ import {
   ImageUpload,
 } from "@pages";
 import { MainLayout } from "@layout";
+import { MiniDrawer } from "../components";
 
 const index = () => {
   const router = createBrowserRouter(
@@ -22,7 +23,7 @@ const index = () => {
       <Route path="/" element={<App />}>
         <Route index element={<SignUp />} />
         <Route path="signin" element={<SignIn />} />
-        <Route path="main/*" element={<MainLayout />}>
+        <Route path="main/*" element={<MiniDrawer />}>
           <Route path="products" element={<Products />} />
           <Route path="brands" element={<Brands />} />
           <Route path="users" element={<Users />} />

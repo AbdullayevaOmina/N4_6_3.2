@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { Button, Card, Form } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { login } from "@auth";
 import * as Yup from "yup";
+import { Box, FormHelperText, TextField, Button } from "@mui/material";
 
 interface FormData {
   username: string;
@@ -62,49 +62,50 @@ function Index() {
 
   return (
     <div className="d-flex align-items-center justify-center bg-slate-700 w-screen h-screen">
-      <Card className="w-96 h-96 p-12">
-        <Form>
-          <Form.Group className="mb-3">
-            <Form.Label>User Name:</Form.Label>
-            <Form.Control
-              type="text"
-              name="username"
-              value={formData.username}
-              onChange={handleInputChange}
-              autoFocus
-              className="bg-secondary-subtle"
-            />
-            {error && (
-              <Form.Text className="text-danger">{error.username}</Form.Text>
-            )}
-          </Form.Group>
+      <div className="w-96 card h-96 p-12">
+        <Box
+          component="form"
+          noValidate
+          autoComplete="off"
+          className="d-grid gap-3  text-white"
+        >
+          <TextField
+            type="text"
+            name="username"
+            value={formData.username}
+            onChange={handleInputChange}
+            label="Username*"
+            variant="outlined"
+            error={error.username ? true : false}
+          />
+          <FormHelperText className="text-danger">
+            {error.username}
+          </FormHelperText>
 
-          <Form.Group className="mb-3">
-            <Form.Label>Password:</Form.Label>
-            <Form.Control
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleInputChange}
-              className="bg-secondary-subtle"
-            />
-            {error && (
-              <Form.Text className="text-danger">{error.password}</Form.Text>
-            )}
-          </Form.Group>
-
+          <TextField
+            name="password"
+            value={formData.password}
+            onChange={handleInputChange}
+            label="Password*"
+            type="password"
+            variant="outlined"
+            error={error.password ? true : false}
+          />
+          <FormHelperText className="text-danger">
+            {error.password}
+          </FormHelperText>
           <Button
-            className="w-full"
-            variant="primary"
+            variant="contained"
+            className=" text-bg-primary"
             onClick={handleFormSubmit}
           >
             Sign In
           </Button>
-        </Form>
+        </Box>
         <Link className="mt-3 text-center" to={"/"}>
           Sign Up
         </Link>
-      </Card>
+      </div>
     </div>
   );
 }

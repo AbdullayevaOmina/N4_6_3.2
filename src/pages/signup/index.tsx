@@ -1,11 +1,12 @@
 import React, { useState } from "react";
-import { Button, Card, Form } from "react-bootstrap";
+import { Card } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import http from "@http";
+import { register } from "@auth";
+
 import * as Yup from "yup";
 import { useMask } from "@react-input/mask";
-
+import { Box, TextField, Button, FormHelperText } from "@mui/material";
 interface FormData {
   username: string;
   phone: string;
@@ -28,11 +29,8 @@ const Index: React.FC = () => {
   });
 
   const [error, setError] = useState<ErrorMessages>({});
-  
-  const inputRef = useMask({
-    mask: "+998 (__) ___-__-__",
-    replacement: { _: /\d/ },
-  });
+
+  const inputRef = useMask({ mask: "+998 (__) ___-__-__", replacement: "_" });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const { name, value } = e.target;
@@ -44,10 +42,14 @@ const Index: React.FC = () => {
 
   const schema = Yup.object().shape({
     username: Yup.string()
-      .min(6, "name 6 tadan kop bolsin")
-      .required("required"),
-    password: Yup.string().min(6, "6 tadan kop bolsin").required("required"),
-    phone: Yup.string().min(19, "To'liq kiriting").required("required"),
+      .min(5, "Username should not be less than 5 characters")
+      .required("User name is required"),
+    password: Yup.string()
+      .min(5, "Password must not be less than 5 characters")
+      .required("Password is required"),
+    phone: Yup.string()
+      .min(19, "Enter the full phone number")
+      .required("Phone is required"),
   });
 
   const handleFormSubmit = async (): Promise<void> => {
@@ -55,7 +57,7 @@ const Index: React.FC = () => {
       await schema.validate(formData, { abortEarly: false });
       let phone_number = formData.phone.replace(/\D/g, "");
       let payload = { ...formData, phone: `+${phone_number}` };
-      await http.post("/auth/register", payload);
+      await register("/auth/register", payload);
       toast.success("You are registered!");
       navigate("/signin");
     } catch (error) {
@@ -72,58 +74,55 @@ const Index: React.FC = () => {
   return (
     <div className="d-flex align-items-center justify-center bg-slate-500 w-screen h-screen">
       <Card className="w-96 h-96 p-12">
-        <Form>
-          <Form.Group className="mb-3">
-            <Form.Label>User Name:</Form.Label>
-            <Form.Control
-              type="text"
-              name="username"
-              value={formData.username}
-              onChange={handleInputChange}
-              autoFocus
-              className="bg-secondary-subtle"
-            />
-            {error.username && (
-              <Form.Text className="text-danger">{error.username}</Form.Text>
-            )}
-          </Form.Group>
-
-          <Form.Group className="mb-3">
-            <Form.Label>Phone Number:</Form.Label>
-            <Form.Control
-              name="phone"
-              value={formData.phone}
-              onChange={handleInputChange}
-              className="bg-secondary-subtle"
-              ref={inputRef}
-            />
-            {error.phone && (
-              <Form.Text className="text-danger">{error.phone}</Form.Text>
-            )}
-          </Form.Group>
-
-          <Form.Group className="mb-3">
-            <Form.Label>Password:</Form.Label>
-            <Form.Control
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleInputChange}
-              className="bg-secondary-subtle"
-            />
-            {error.password && (
-              <Form.Text className="text-danger">{error.password}</Form.Text>
-            )}
-          </Form.Group>
-
+        <Box
+          component="form"
+          noValidate
+          autoComplete="off"
+          className="d-grid gap-3  text-white"
+        >
+          <TextField
+            type="text"
+            name="username"
+            value={formData.username}
+            onChange={handleInputChange}
+            label="Username*"
+            variant="outlined"
+            error={error.username ? true : false}
+          />
+          <FormHelperText className="text-danger">
+            {error.username}
+          </FormHelperText>
+          <TextField
+            type="text"
+            name="phone"
+            value={formData.phone}
+            onChange={handleInputChange}
+            inputRef={inputRef}
+            label="Phone Number*"
+            variant="outlined"
+            error={error.phone ? true : false}
+          />
+          <FormHelperText className="text-danger">{error.phone}</FormHelperText>
+          <TextField
+            name="password"
+            value={formData.password}
+            onChange={handleInputChange}
+            label="Password*"
+            type="password"
+            variant="outlined"
+            error={error.password ? true : false}
+          />
+          <FormHelperText className="text-danger">
+            {error.password}
+          </FormHelperText>
           <Button
-            className="w-full"
-            variant="primary"
+            variant="contained"
+            className=" text-bg-primary"
             onClick={handleFormSubmit}
           >
             Sign Up
           </Button>
-        </Form>
+        </Box>
         <Link className="mt-3 text-center" to={"/signin"}>
           Sign In
         </Link>

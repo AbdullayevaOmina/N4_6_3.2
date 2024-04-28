@@ -29,14 +29,14 @@ const Index = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const productResponse = await Get("/products");
-        setProducts(productResponse);
+        // const productResponse = await Get("/products");
+        // setProducts(productResponse);
 
-        const brandResponse = await Get("/brands");
-        setBrands(brandResponse);
+        // const brandResponse = await Get("/brands");
+        // setBrands(brandResponse);
 
-        const modeldResponse = await Get("/models");
-        setModels(modeldResponse);
+        // const modeldResponse = await Get("/models");
+        // setModels(modeldResponse);
       } catch (error) {
         console.error("Error fetching data:", error);
       }

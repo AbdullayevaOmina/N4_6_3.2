@@ -97,7 +97,7 @@ const Index = () => {
             placeholder="Search Brand..."
           />
           <button className="btn btn-primary rounded-r-none" type="button">
-            <i className="fa-solid fa-magnifying-glass"></i>
+            <i className="fa-solid fa-magnifying-glass"/>
           </button>
         </form>
         <Button variant="success" onClick={handleShow} type="submit">

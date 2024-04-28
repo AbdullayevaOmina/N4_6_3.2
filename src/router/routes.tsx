@@ -15,6 +15,7 @@ const router = [
     path: "/main/users",
     element: <Users />,
     content: "Users",
+    icon: "<GroupIcon />"
   },
   {
     path: "/main/models",

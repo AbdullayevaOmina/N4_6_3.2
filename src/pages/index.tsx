@@ -4,7 +4,6 @@ import Products from "./products";
 import Brands from "./brands";
 import Users from "./users";
 import Models from "./models";
-import User from "./user";
 import ImageUpload from "./imgUpload";
 
-export { SignIn, SignUp, Products, Brands, Users, User, Models, ImageUpload };
+export { SignIn, SignUp, Products, Brands, Users, Models, ImageUpload };
