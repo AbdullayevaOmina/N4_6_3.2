@@ -130,7 +130,8 @@ export default function MiniDrawer() {
             component="div"
             className=" capitalize"
           >
-            {lastPart}
+            {/* {lastPart} */}
+            Dashboard
           </Typography>
         </Toolbar>
       </AppBar>
